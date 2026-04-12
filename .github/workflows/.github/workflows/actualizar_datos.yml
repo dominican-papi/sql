@@ -1,0 +1,38 @@
+name: Actualizar Datos WCA
+
+on:
+  schedule:
+    # Corre todos los domingos a las 3:00 AM (hora UTC)
+    - cron: '0 3 * * 0'
+  # Botón mágico para correrlo manual cuando quieras
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  procesar-estadisticas:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar librerías (Pandas)
+        run: pip install -r scripts/requirements.txt
+
+      - name: Correr el script de procesamiento WCA
+        run: python scripts/procesar_wca.py
+
+      - name: Guardar el nuevo JSON en el repositorio
+        run: |
+          git config --global user.name "Dominican Papi Bot"
+          git config --global user.email "bot@github.com"
+          git add datos/top_333.json
+          git commit -m "Actualización automática: Nuevos datos WCA" || echo "No hay cambios nuevos"
+          git push
