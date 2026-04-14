@@ -21,11 +21,11 @@ conn = sqlite3.connect('wca.db')
 
 # Leer los TSV y meterlos a SQLite. 
 # Nota: Limitamos las columnas para que GitHub no se quede sin memoria.
-columnas_resultados = ['eventId', 'personId', 'personName', 'best', 'average']
+columnas_resultados = ['event_id', 'person_id', 'person_name', 'best', 'average', 'country_id']
 df_resultados = pd.read_csv('WCA_export_Results.tsv', sep='\t', usecols=columnas_resultados, low_memory=False)
 df_resultados.to_sql('Results', conn, if_exists='replace', index=False)
 
-columnas_personas = ['id', 'name', 'countryId']
+columnas_personas = ['wca_id', 'name', 'sub_id']
 df_personas = pd.read_csv('WCA_export_Persons.tsv', sep='\t', usecols=columnas_personas, low_memory=False)
 df_personas.to_sql('Persons', conn, if_exists='replace', index=False)
 
@@ -33,14 +33,13 @@ print("4. Ejecutando tu magia en SQL...")
 # Aquí va tu query. Agrupamos por person_id (WCA ID) para evitar errores con nombres.
 mi_query = """
     SELECT 
-        r.personId AS wca_id,
-        r.personName AS nombre,
-        p.countryId AS pais,
+        r.person_id AS wca_id,
+        p.name AS nombre,
         MIN(r.best) AS mejor_single
     FROM Results r
-    JOIN Persons p ON r.personId = p.id
-    WHERE r.eventId = '333' AND r.best > 0
-    GROUP BY r.personId
+    JOIN Persons p ON r.person_id = p.wca_id
+    WHERE r.eventId = '333' AND r.best > 0 AND p.sub_id = 1 AND r.country_id = 'Dominican Republic'
+    GROUP BY r.person_id
     ORDER BY mejor_single ASC
     LIMIT 50;
 """
