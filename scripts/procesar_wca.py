@@ -1,6 +1,7 @@
 import pandas as pd
 import sqlite3
-import urllib.request
+import requests
+import time
 import zipfile
 import os
 import json
@@ -8,7 +9,28 @@ import json
 print("1. Descargando el export de la WCA...")
 url = "https://www.worldcubeassociation.org/results/misc/WCA_export.tsv.zip"
 zip_path = "WCA_export.tsv.zip"
-urllib.request.urlretrieve(url, zip_path)
+
+intentos = 3
+for i in range(intentos):
+    try:
+        headers = {'User-Agent': 'WCA-Data-Bot/1.0'}
+        respuesta = requests.get(url, headers=headers, timeout=30)
+        respuesta.raise_for_status() 
+        
+        with open(zip_path, 'wb') as f:
+            f.write(respuesta.content)
+            
+        print("Descarga completada con éxito.")
+        break 
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Falló el intento {i + 1} de {intentos}. Error: {e}")
+        if i < intentos - 1:
+            print("Reintentando en 10 segundos...")
+            time.sleep(10)
+        else:
+            print("No se pudo descargar el export.")
+            raise
 
 print("2. Descomprimiendo archivos necesarios...")
 with zipfile.ZipFile(zip_path, 'r') as zip_ref:
