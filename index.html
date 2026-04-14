@@ -40,15 +40,15 @@
                 const tbody = document.getElementById('tabla-cuerpo');
                 
                 // Recorremos cada competidor que nos trajo el SQL
-                data.forEach((competidor, index) => {
+                data.forEach((results, index) => {
                     // Los tiempos de la WCA vienen sin el punto decimal (ej: 444 = 4.44s)
-                    let tiempoSegundos = (competidor.mejor_single / 100).toFixed(2);
+                    let tiempoSegundos = (results.best / 100).toFixed(2);
                     
                     let fila = `<tr>
                         <td>${index + 1}</td>
-                        <td>${competidor.wca_id}</td>
-                        <td style="text-align: left;">${competidor.nombre}</td>
-                        <td>${competidor.pais}</td>
+                        <td>${results.id}</td>
+                        <td style="text-align: left;">${results.person_name}</td>
+                        <td>${results.country_id}</td>
                         <td class="tiempo">${tiempoSegundos}</td>
                     </tr>`;
                     
