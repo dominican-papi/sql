@@ -7,7 +7,7 @@ import os
 import json
 
 print("1. Descargando el export de la WCA...")
-url = "https://www.worldcubeassociation.org/results/misc/WCA_export.tsv.zip"
+url = "https://www.worldcubeassociation.org/export/results/WCA_export.tsv.zip"
 zip_path = "WCA_export.tsv.zip"
 
 intentos = 3
