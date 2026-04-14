@@ -6,19 +6,37 @@ import zipfile
 import os
 import json
 
-print("1. Descargando el export de la WCA...")
-url = "https://www.worldcubeassociation.org/export/results/WCA_export.tsv.zip"
-zip_path = "WCA_export.tsv.zip"
+print("1. Obteniendo el link oficial del export de la WCA...")
 
+api_url = "https://www.worldcubeassociation.org/api/v0/export/public"
+headers = {'User-Agent': 'WCA-Data-Bot/1.0'}
+
+# 1.1 Consultar a la API cuál es el link de hoy
+try:
+    respuesta_api = requests.get(api_url, headers=headers, timeout=15)
+    respuesta_api.raise_for_status()
+    datos_api = respuesta_api.json()
+    
+    # Extraemos el link exacto del archivo TSV
+    url_descarga = datos_api['tsv_url']
+    print(f"Link dinámico obtenido: {url_descarga}")
+    
+except Exception as e:
+    print(f"Bobo obteniendo el link de la API: {e}")
+    raise
+
+print("1.2 Descargando el archivo de la base de datos...")
+zip_path = "WCA_export.tsv.zip"
 intentos = 3
+
+# 1.2 Bucle de reintentos con el link nuevo
 for i in range(intentos):
     try:
-        headers = {'User-Agent': 'WCA-Data-Bot/1.0'}
-        respuesta = requests.get(url, headers=headers, timeout=30)
-        respuesta.raise_for_status() 
+        respuesta_descarga = requests.get(url_descarga, headers=headers, timeout=60)
+        respuesta_descarga.raise_for_status() 
         
         with open(zip_path, 'wb') as f:
-            f.write(respuesta.content)
+            f.write(respuesta_descarga.content)
             
         print("Descarga completada con éxito.")
         break 
