@@ -69,7 +69,7 @@ print("3. Cargando datos a la base de datos SQLite temporal...")
 conn = sqlite3.connect('wca.db')
 
 # Usamos las variables dinámicas para leer los archivos
-columnas_resultados = ['event_id', 'person_id', 'person_name', 'best', 'average', 'country_id']
+columnas_resultados = ['event_id', 'person_id', 'person_name', 'best', 'average', 'country_name']
 df_resultados = pd.read_csv(archivo_resultados, sep='\t', usecols=columnas_resultados, low_memory=False)
 df_resultados.to_sql('Results', conn, if_exists='replace', index=False)
 
@@ -85,7 +85,7 @@ mi_query = """
         MIN(r.best) AS mejor_single
     FROM Results r
     JOIN Persons p ON r.person_id = p.wca_id
-    WHERE r.eventId = '333' AND r.best > 0 AND p.sub_id = 1 AND r.country_id = 'Dominican Republic'
+    WHERE r.eventId = '333' AND r.best > 0 AND p.sub_id = 1 AND r.country_name = 'Dominican Republic'
     GROUP BY r.person_id
     ORDER BY mejor_single ASC
     LIMIT 50;
