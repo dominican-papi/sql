@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estadísticas WCA</title>
+    <title>Estadísticas WCA - República Dominicana</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f4f9; }
         h1 { color: #333; text-align: center; }
@@ -16,7 +16,7 @@
 </head>
 <body>
 
-    <h1>Top 50 - Single 3x3x3</h1>
+    <h1>Top 50 - Single 3x3x3 🇩🇴</h1>
     
     <table>
         <thead>
@@ -39,16 +39,19 @@
             .then(data => {
                 const tbody = document.getElementById('tabla-cuerpo');
                 
-                // Recorremos cada competidor que nos trajo el SQL
-                data.forEach((results, index) => {
+                // Limpiamos cualquier texto previo ("Cargando...")
+                tbody.innerHTML = '';
+                
+                // Recorremos cada competidor que nos trajo el JSON
+                data.forEach((competidor, index) => {
                     // Los tiempos de la WCA vienen sin el punto decimal (ej: 444 = 4.44s)
-                    let tiempoSegundos = (results.best / 100).toFixed(2);
+                    let tiempoSegundos = (competidor.mejor_single / 100).toFixed(2);
                     
                     let fila = `<tr>
                         <td>${index + 1}</td>
-                        <td>${results.person_id}</td>
-                        <td style="text-align: left;">${person.name}</td>
-                        <td>${results.country_id}</td>
+                        <td>${competidor.wca_id}</td>
+                        <td style="text-align: left;">${competidor.nombre}</td>
+                        <td>República Dominicana</td>
                         <td class="tiempo">${tiempoSegundos}</td>
                     </tr>`;
                     
@@ -57,7 +60,7 @@
             })
             .catch(error => {
                 console.error('Error cargando el JSON:', error);
-                document.getElementById('tabla-cuerpo').innerHTML = '<tr><td colspan="5">Aún no hay datos. Verifica que el Action haya corrido bien.</td></tr>';
+                document.getElementById('tabla-cuerpo').innerHTML = '<tr><td colspan="5" style="color: red;">Bobo cargando los datos. Verifica el Action de GitHub.</td></tr>';
             });
     </script>
 
