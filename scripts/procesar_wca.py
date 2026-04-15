@@ -68,16 +68,19 @@ with zipfile.ZipFile(zip_path, 'r') as zip_ref:
 print("3. Cargando datos a la base de datos SQLite temporal...")
 conn = sqlite3.connect('wca.db')
 
-# Usamos las variables dinámicas para leer los archivos
-columnas_resultados = ['event_id', 'person_id', 'person_name', 'best', 'average', 'country_id']
+# 3.1 Actualizar las columnas de Resultados (le quitamos country_id)
+columnas_resultados = ['event_id', 'person_id', 'person_name', 'best', 'average']
 df_resultados = pd.read_csv(archivo_resultados, sep='\t', usecols=columnas_resultados, low_memory=False)
 df_resultados.to_sql('Results', conn, if_exists='replace', index=False)
 
-columnas_personas = ['wca_id', 'name', 'sub_id']
+# 3.2 Actualizar las columnas de Personas (le agregamos country_id)
+columnas_personas = ['wca_id', 'name', 'sub_id', 'country_id']
 df_personas = pd.read_csv(archivo_personas, sep='\t', usecols=columnas_personas, low_memory=False)
 df_personas.to_sql('Persons', conn, if_exists='replace', index=False)
 
 print("4. Ejecutando tu magia en SQL...")
+# 4.1 Actualizamos la consulta para usar p.country_id en lugar de r.country_id
+# Además, en la v2 cambiaron 'eventId' por 'event_id'
 mi_query = """
     SELECT 
         r.person_id AS wca_id,
@@ -85,7 +88,7 @@ mi_query = """
         MIN(r.best) AS mejor_single
     FROM Results r
     JOIN Persons p ON r.person_id = p.wca_id
-    WHERE r.eventId = '333' AND r.best > 0 AND p.sub_id = 1 AND r.country_id = 'Dominican Republic'
+    WHERE r.event_id = '333' AND r.best > 0 AND p.sub_id = 1 AND p.country_id = 'Dominican Republic'
     GROUP BY r.person_id
     ORDER BY mejor_single ASC
     LIMIT 50;
