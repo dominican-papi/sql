@@ -55,10 +55,10 @@ with zipfile.ZipFile(zip_path, 'r') as zip_ref:
     nombres_en_zip = zip_ref.namelist()
     print(f"Archivos encontrados en el ZIP: {nombres_en_zip}")
     
-    # Buscamos dinámicamente los archivos correctos
-    archivo_resultados = next((n for n in nombres_en_zip if 'Results' in n), None)
-    archivo_personas = next((n for n in nombres_en_zip if 'Persons' in n), None)
-    
+        # Buscamos dinámicamente los archivos correctos (ignorando mayúsculas y siendo específicos)
+    archivo_resultados = next((n for n in nombres_en_zip if 'export_results.tsv' in n.lower()), None)
+    archivo_personas = next((n for n in nombres_en_zip if 'export_persons.tsv' in n.lower()), None)
+
     if not archivo_resultados or not archivo_personas:
         raise ValueError("¡Bobo! No se encontraron los archivos de Results o Persons en el ZIP.")
         
