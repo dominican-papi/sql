@@ -7,8 +7,13 @@ on:
   # Botón mágico para correrlo manual cuando quieras
   workflow_dispatch:
 
+# Permisos necesarios para que el bot pueda subir el JSON al repo
 permissions:
   contents: write
+
+env:
+  # Esto quita la advertencia amarilla de Node.js que te salió ahorita
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   procesar-estadisticas:
@@ -23,7 +28,7 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Instalar librerías (Pandas)
+      - name: Instalar librerías
         run: pip install -r scripts/requirements.txt
 
       - name: Correr el script de procesamiento WCA
@@ -33,6 +38,12 @@ jobs:
         run: |
           git config --global user.name "Dominican Papi Bot"
           git config --global user.email "bot@github.com"
-          git add datos/top_333.json
-          git commit -m "Actualización automática: Nuevos datos WCA" || echo "No hay cambios nuevos"
-          git push
+          # Aseguramos que el archivo existe antes de agregarlo para evitar errores
+          if [ -f datos/top_333.json ]; then
+            git add datos/top_333.json
+            git commit -m "🤖 Actualización automática: Rankings WCA RD" || echo "No hay cambios nuevos"
+            git push
+          else
+            echo "¡Bobo! El archivo JSON no se encontró."
+            exit 1
+          fi
