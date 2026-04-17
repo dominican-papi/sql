@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 env:
-  # Esto quita la advertencia amarilla de Node.js que te salió ahorita
+  # Esto quita la advertencia amarilla de Node.js
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
       - name: Correr el script de procesamiento WCA
         run: python scripts/procesar_wca.py
 
-            - name: Guardar los nuevos JSON en el repositorio
+      - name: Guardar los nuevos JSON en el repositorio
         run: |
           git config --global user.name "Dominican Papi Bot"
           git config --global user.email "bot@github.com"
