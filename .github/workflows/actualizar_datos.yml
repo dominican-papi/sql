@@ -34,16 +34,10 @@ jobs:
       - name: Correr el script de procesamiento WCA
         run: python scripts/procesar_wca.py
 
-      - name: Guardar el nuevo JSON en el repositorio
+            - name: Guardar los nuevos JSON en el repositorio
         run: |
           git config --global user.name "Dominican Papi Bot"
           git config --global user.email "bot@github.com"
-          # Aseguramos que el archivo existe antes de agregarlo para evitar errores
-          if [ -f datos/top_333.json ]; then
-            git add datos/top_333.json
-            git commit -m "🤖 Actualización automática: Rankings WCA RD" || echo "No hay cambios nuevos"
-            git push
-          else
-            echo "¡Bobo! El archivo JSON no se encontró."
-            exit 1
-          fi
+          git add datos/*.json
+          git commit -m "🤖 Actualización automática: Múltiples Rankings WCA RD" || echo "No hay cambios nuevos"
+          git push
